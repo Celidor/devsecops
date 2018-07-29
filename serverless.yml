@@ -20,7 +20,7 @@ plugins:
 
 custom:
   customDomain:
-    domainName: time-${env:AWS_ENV}.celidor.uk
+    domainName: time-${env:AWS_ENV}.${env:AWS_DOM}
     basePath: ${env:AWS_STAGE}
     stage: ${env:AWS_STAGE}
     createRoute53Record: true
