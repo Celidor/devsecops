@@ -14,14 +14,3 @@ functions:
       - http:
           path: ping
           method: get
-
-plugins:
-  - serverless-domain-manager
-
-custom:
-  customDomain:
-    domainName: time-${env:AWS_ENV}.${env:AWS_DOM}
-    basePath: ${env:AWS_STAGE}
-    stage: ${env:AWS_STAGE}
-    createRoute53Record: true
-    endpointType: 'regional'
