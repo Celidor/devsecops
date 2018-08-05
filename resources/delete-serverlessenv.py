@@ -28,19 +28,19 @@ class s3:
     self.session = boto3.session.Session(profile_name=self.profile)
     self.client = self.session.client('s3',region_name=region)
 
-    print "Searching for S3 buckets"
+    print("Searching for S3 buckets")
 
     buckets = self.client.list_buckets()['Buckets']
     #print json.dumps(buckets, sort_keys=True, indent=2, default=json_serial)
     for bucket in buckets:
         if bucket['Name'].startswith('serverless-') and self.env in bucket['Name']:
-            print "Deleting objects in S3 bucket %s" % (bucket['Name'])
+            print("Deleting objects in S3 bucket %s" % (bucket['Name']))
             bucketobjects = self.client.list_objects_v2(Bucket=bucket['Name'])['Contents']
             #print json.dumps(bucketobjects, sort_keys=True, indent=2, default=json_serial)
             for bucketobject in bucketobjects:
                 if self.dry_run is None:
                     self.client.delete_object(Bucket=bucket['Name'],Key=bucketobject['Key'])
-            print "Deleting S3 bucket %s" % (bucket['Name'])
+            print("Deleting S3 bucket %s" % (bucket['Name']))
             if self.dry_run is None:
                 self.client.delete_bucket(Bucket=bucket['Name'])
 
@@ -51,7 +51,7 @@ class cloudformation:
     self.env = env
     self.dry_run = dry_run
 
-    print "Searching for CloudFormation stacks in " + region + " region"
+    print("Searching for CloudFormation stacks in " + region + " region")
     self.session = boto3.session.Session(profile_name=self.profile, region_name=region)
     self.client = self.session.client('cloudformation', region_name=region)
     stacks = self.client.list_stacks(StackStatusFilter=[
@@ -64,7 +64,7 @@ class cloudformation:
     #print json.dumps(stacks, sort_keys=True, indent=2, default=json_serial)
     for stack in stacks:
         if stack['StackName'].startswith('serverless-') and self.env in stack['StackName']:
-            print "Deleting CloudFormation stack %s in us-east-1 region" % (stack['StackName'])
+            print("Deleting CloudFormation stack %s in us-east-1 region" % (stack['StackName']))
             if self.dry_run is None:
                 self.client.delete_stack(StackName=stack['StackName'])
 
@@ -75,7 +75,7 @@ class iam:
     self.env = env
     self.dry_run = dry_run
 
-    print "Searching for IAM roles"
+    print("Searching for IAM roles")
 
     self.session = boto3.session.Session(profile_name=self.profile)
     self.client = self.session.client('iam')
@@ -100,18 +100,18 @@ class iam:
       if role['RoleName'].startswith('serverless-') and self.env in role['RoleName']:
         #print json.dumps(role, sort_keys=True, indent=2, default=json_serial)
         for role_policy in role ['RolePolicyList']:
-          print "Delete inline role policy %s from role %s" % (role_policy['PolicyName'], role['RoleName'])
+          print("Delete inline role policy %s from role %s" % (role_policy['PolicyName'], role['RoleName']))
           if self.dry_run is None:
             self.client.delete_role_policy(RoleName=role ['RoleName'], PolicyName= role_policy['PolicyName'])
         for policy in role['AttachedManagedPolicies']:
-          print "Detach policy %s from role %s" % (policy['PolicyArn'], role['RoleName'])
+          print("Detach policy %s from role %s" % (policy['PolicyArn'], role['RoleName']))
           if self.dry_run is None:
             self.client.detach_role_policy(RoleName=role['RoleName'], PolicyArn=policy['PolicyArn'])
         for ip in role['InstanceProfileList']:
-          print "Remove role %s from instance profile %s" % (role['RoleName'], ip['InstanceProfileName'])
+          print("Remove role %s from instance profile %s" % (role['RoleName'], ip['InstanceProfileName']))
           if self.dry_run is None:
             self.client.remove_role_from_instance_profile(InstanceProfileName=ip['InstanceProfileName'], RoleName=role['RoleName'])
-        print "Delete role %s" % role['RoleName']
+        print("Delete role %s" % role['RoleName'])
         if self.dry_run is None:
           self.client.delete_role(RoleName=role['RoleName'])
 
