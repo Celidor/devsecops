@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#dry run: python delete-serverlesstraining.py --env {ENVIRONMENT_NAME} --dry_run
-#usage: python delete-serverlesstraining.py --env {ENVIRONMENT_NAME}
+#dry run: python delete-serverlessenv.py --env {ENVIRONMENT_NAME} --dry_run
+#usage: python delete-serverlessenv.py --env {ENVIRONMENT_NAME}
 #optional arguments: --profile (AWS Profile) and --region (AWS Region)
 import boto3
 import sys
